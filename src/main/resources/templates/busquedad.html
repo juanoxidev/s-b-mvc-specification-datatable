@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Resultados de Búsqueda</title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script type="text/javascript" charset="utf8"
+		src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+		  <script type="text/javascript" th:src="@{/js/utiles.js}"></script>
+</head>
+
+<body>
+	<h1>Resultados de Búsqueda</h1>
+	<form id="searchForm" th:action="@{/resultados}" th:object="${personaForm}" method="post">
+		<input type="text" th:field="*{nombre}" id="nombre" placeholder="Nombre" />
+		<input type="text" th:field="*{cargo}" id="cargo" placeholder="Cargo" />
+		<input type="text" th:field="*{salario}" id="salario" placeholder="Salario" />
+		<select th:field="*{estadoId}" id="estadoId">
+			<option value="" selected>Seleccione un estado</option>
+			<option th:each="estado : ${estados}" th:value="${estado.id}" th:text="${estado.detalle}"></option>
+		</select>
+		<input type="hidden" th:field="*{id}" id="personaId" />
+		<button type="button" onclick="buscar()">Buscar</button>
+		<button type="button" id="clearFiltersButton">Limpiar Filtros</button>
+	</form>
+	<table id="personasTable" class="display">
+		<thead>
+			<tr>
+				<th>Nombre</th>
+				<th>Cargo</th>
+				<th>Salario</th>
+				<th>Acciones</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			
+			crearTabla();
+
+			$('#clearFiltersButton').on('click', function () {
+				$('#personaId').val('');
+				$('#nombre').val('');
+				$('#cargo').val('');
+				$('#salario').val('');
+				$('#estadoId').val('');
+				table.search('').columns().search('').draw();
+			});
+		});
+
+
+		function crearTabla() {
+			var tabla = $('#personasTable').DataTable({
+				"bInfo": false, //Oculta el "mostrando X de Y registros
+				serverSide: true,
+				"lengthChange": false,
+				ajax: {
+					"url": "/resultados",
+					type: "POST",
+					"contentType": 'application/json; charset=utf-8',
+					data: function (d) {
+						var o = $("#searchForm").formAObjeto();
+						d.formBusqueda = o;
+						return JSON.stringify(d);
+					},
+					dataSrc: 'content'
+				},
+				columns: [
+
+
+					{"data": "nombre"},
+					{"data": "cargo"},
+					{"data": "salario"},
+					{
+						"data": null,
+						"render": function (data, type, row) {
+							return '<button type="button" class="ver-persona" onclick="verPersona(${row.id})">Ver</button>';
+						}
+					}
+				],
+				searching: false,
+				ordering: false,
+				//Remueve estos tipos de class que dataTable agrega automáticamente
+				drawCallback: function () {
+					$('#personasTable').removeClass("no-footer");
+				},
+			});
+			var tabla = $('#personasTable').DataTable();
+			tabla.on('click', 'td:not(:last-child)', function () {
+				var row = tabla.row($(this).closest('tr')).data();
+				var id = row.id;
+				verPersona(id);
+			});
+		}
+		function buscar() {
+			var tabla = $('#personasTable').DataTable();
+			tabla.off('click', 'td:not(:last-child)');
+			tabla.destroy();
+			crearTabla();
+		}
+
+		function verPersona(id) {
+			let urlVista = /*[[@{/persona}]]*/
+			$('##searchForm').attr('action', urlVista);
+			$("#personaId").val(id);
+			$("#searchForm").submit();
+
+		}
+		
+	</script>
+</body>
+
+</html>

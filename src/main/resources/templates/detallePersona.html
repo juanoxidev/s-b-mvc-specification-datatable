@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalle de Persona</title>
+</head>
+<body>
+    <h1>Detalle de Persona</h1>
+    <p>Nombre: <span th:text="${persona.nombre}"></span></p>
+    <p>Cargo: <span th:text="${persona.cargo}"></span></p>
+    <p>Salario: <span th:text="${persona.salario}"></span></p>
+    <button onclick="window.location.href='/volverABusqueda'">Volver a la Búsqueda</button>
+</body>
+</html>
