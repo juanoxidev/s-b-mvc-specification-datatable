@@ -7,8 +7,6 @@ public interface PersonaProyeccion {
 
 	String getNombre();
 
-	String getApellido();
-
 	BigDecimal getSalario();
 
 	String getCargo();

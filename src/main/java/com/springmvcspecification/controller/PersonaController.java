@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.springmvcspecification.datatable.DataTablesRequestForm;
 import com.springmvcspecification.datatable.DataTablesResponse;
+import com.springmvcspecification.dto.PersonaDTO;
 import com.springmvcspecification.entity.Persona;
 import com.springmvcspecification.form.PersonaForm;
 import com.springmvcspecification.service.EstadoService;
@@ -49,7 +50,7 @@ public class PersonaController {
 	}
 
 	@PostMapping("/resultados")
-	public @ResponseBody DataTablesResponse<Persona> resultados(
+	public @ResponseBody DataTablesResponse<PersonaDTO> resultados(
 			@RequestBody DataTablesRequestForm<PersonaForm> dtRequest) {
 
 
@@ -57,10 +58,10 @@ public class PersonaController {
 		int primerResultado = dtRequest.getStart();
 		PersonaForm personaForm = dtRequest.getFormBusqueda();
 
-		DataTablesResponse<Persona> dtResponse = new DataTablesResponse<>();
+		DataTablesResponse<PersonaDTO> dtResponse = new DataTablesResponse<>();
 
 		// Realizar la búsqueda
-		List<Persona> personas = personaService.buscar(personaForm, primerResultado, cantidad);
+		List<PersonaDTO> personas = personaService.buscar(personaForm, primerResultado, cantidad);
 
 		// Obtener el total de personas (para la paginación)
 		Long totalPersonas = personaService.contar(personaForm);
