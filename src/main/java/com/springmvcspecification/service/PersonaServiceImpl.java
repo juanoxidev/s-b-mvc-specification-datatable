@@ -102,9 +102,14 @@ public class PersonaServiceImpl implements PersonaService {
 		if (estadoId != null) {
 			System.out.println("Estado ID: " + estadoId); // Aquí corregí "nombre" a "estadoId"
 			predicate = (predicate != null) ? predicate.and(qPersona.estado.id.eq(estadoId))
-					.and(qPersona.estado.id.ne(2L)) // Excluye el estado con ID 2
-					: qPersona.estado.id.ne(2L); // Excluye el estado con ID 2 directamente
+					: qPersona.estado.id.eq(estadoId);
 		}
+
+		/*
+		 * predicate.and(qPersona.estado.id.eq(estadoId))
+		 * .and(qPersona.estado.id.ne(2L)) // Excluye el estado con ID 2 :
+		 * qPersona.estado.id.ne(2L); // Excluye el estado con ID 2 directamente
+		 */
 
 		// Agregar una condición adicional si deseas filtrar por personas cuyo nombre no
 		// sea nulo
